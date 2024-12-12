@@ -90,7 +90,12 @@ class AMICreator:
         if not self.skip_stopping_instances:
             print("\nWARNING: Instances will be stopped before creating AMIs!")
         
-        return input("\nProceed with AMI creation? (y/N): ").lower() == 'y'
+        try:
+            return input("\nProceed with AMI creation? (y/N): ").lower() == 'y'
+        except EOFError:
+            # Handle pipe case (curl | python)
+            print("\nInteractive input not available. Use --auto-approve for non-interactive execution.")
+            return False
 
     def stop_instances(self) -> bool:
         if self.skip_stopping_instances:
